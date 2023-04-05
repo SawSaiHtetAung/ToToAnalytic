@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/analysisLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SubDisplay.AnalysisPage">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/analysisFilterCpy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="SEARCH"
+        android:textColor="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/analysisLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="LOAD"
+        android:textColor="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_background"
+        app:layout_constraintEnd_toStartOf="@+id/analysisFilterClr"
+        app:layout_constraintStart_toEndOf="@+id/analysisFilterCpy"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/analysisFilterClr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="CLEAR"
+        android:textColor="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/analysisAdditional"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Additional"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analysisFilterCpy" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/analysisFilterOutput"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/primary_color_transparent"
+        android:gravity="center"
+        android:text="No filter"
+        android:textColor="@color/secondary_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analysisAdditional" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/PrimaryVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/analysisFilterOutput">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.androidplot.xy.XYPlot
+                style="@style/APDefacto.Light"
+                android:id="@+id/plotTop"
+                android:layout_width="match_parent"
+                app:lineLabelRotationBottom="-90"
+                android:layout_height="300dp"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <com.androidplot.xy.XYPlot
+                style="@style/APDefacto.Light"
+                android:id="@+id/plotBelow"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

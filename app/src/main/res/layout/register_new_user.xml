@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/registerNewUserLayout"
+    android:paddingBottom="30dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/registerInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Sign Up to continue"
+        android:fontFamily="@font/electrolize"
+        android:textColor="@color/secondary_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/informationTitle" />
+
+    <TextView
+        android:id="@+id/informationTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_color"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:text="REGISTER FOR NEW USER"
+        android:textColor="@color/secondary_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/registerEmail"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_edit_text"
+        android:fontFamily="@font/electrolize"
+        android:gravity="center"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/secondary_text_color"
+        android:textColorHint="#30000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerInformation" />
+
+    <EditText
+        android:id="@+id/registerPassword"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_edit_text"
+        android:fontFamily="@font/electrolize"
+        android:gravity="center"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColor="@color/secondary_text_color"
+        android:textColorHint="#30000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/registerEmail"
+        app:layout_constraintStart_toStartOf="@+id/registerEmail"
+        app:layout_constraintTop_toBottomOf="@+id/registerEmail" />
+
+    <EditText
+        android:id="@+id/confirmedPassword"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_edit_text"
+        android:fontFamily="@font/electrolize"
+        android:gravity="center"
+        android:hint="Confirmed password"
+        android:inputType="textPassword"
+        android:textColor="@color/secondary_text_color"
+        android:textColorHint="#30000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/registerEmail"
+        app:layout_constraintStart_toStartOf="@+id/registerEmail"
+        app:layout_constraintTop_toBottomOf="@+id/registerPassword" />
+
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_button"
+        android:text="REGISTER"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/confirmedPassword"
+        app:layout_constraintStart_toStartOf="@+id/confirmedPassword"
+        app:layout_constraintTop_toBottomOf="@+id/confirmedPassword" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

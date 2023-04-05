@@ -1,0 +1,155 @@
+<resources>
+    <string name="app_name">ToTo Analytics</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- set menu items string -->
+    <string name="language">LANGUAGE</string>
+    <string name="advFormula">LOAD FORMULA</string>
+    <string name="purchase">PURCHASE PRO VERSION</string>
+    <string name="about">ABOUT US</string>
+
+    <!-- Language selected -->
+    <string name="english">ENGLISH</string>
+    <string name="myanmar">MYANMAR</string>
+    <string name="chinese">CHINESE</string>
+
+
+    <string-array name="daySelected">
+        <item>Day</item>
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+
+    <string-array name="monthSelected">
+        <item>Month</item>
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+
+    <string-array name="yearSelected">
+        <item>Year</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+    </string-array>
+
+    <string-array name="nullValue">
+        <item>N/A</item>
+    </string-array>
+
+    <string-array name="algorithm">
+        <item>N/A</item>
+        <item>JUMP</item>
+    </string-array>
+
+    <string-array name="JUMP">
+        <item>N/A</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="prefix">
+        <item>N/A</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="suffix">
+        <item>N/A</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <!-- News letters simple text -->
+    <string name="newsLettersHeader">NEWS LETTERS FORM US</string>
+    <string name="newsLettersTitle">About this app</string>
+    <string name="newsLetterSources">From app creator</string>
+    <string name="newsLetterBody">\t*** This app is not affiliated with Singapore Pools ***, \n\nAnd should be used for reference purposes only.
+    \n This app will help you to analysis the frequency of winning number using various filter.</string>
+    <string name="newsLetterDate">Thu, 02 Mar 2023</string>
+    <string name="welcome_msg">Thanks for using our ToTo Analytic. If you does not have account, please register for new account.</string>
+    <string name="welcome">Welcome</string>
+    <string name="logic">Logic</string>
+    <string name="no_filter">No filter</string>
+    <string name="prefix">Prefix</string>
+    <string name="suffix">Suffix</string>
+    <string name="jump">Jump</string>
+    <string name="arg">Argument</string>
+    <string name="load_configuration">LOAD CONFIGURATION (Beta Version)</string>
+    <string name="load">LOAD</string>
+    <string name="delete">DELETE</string>
+    <string name="developed_by">Safe Season Co.,Ltd \nNo.16, Independent street, Thuwanna Township, Yangon, Myanmar.
+        \ncontact us: +95 (9) 776437645 \nemail: contactus@safeseasonmyanmar.com
+    \nwww.safeseasonmyanmar.com</string>
+    <string name="remember">Remember Me</string>
+    <string name="resetTitle">Enter the email associated with your account and will send you a link to your password.</string>
+    <string name="recovery">RECOVERY PASSWORD</string>
+
+    <!-- About us context -->
+    <string name="termsNcondition">\tWelcome to TOTO Analytic application ("the Application"). By using
+        the Application, you agree to be bound by these terms and conditions ("Terms"). Please read
+        these Terms carefully before using the Application.\n\n\n
+        \t1.\tUse of Application: The Application is designed to provide data analysis services to its users. You may use the Application
+        only for lawful purposes and in accordance with these Terms.\n\n
+        \t2.\tDisclaimer of Liability: The developers of the Application are not responsible for any damages or losses that
+        may result from the use of the Application. The Application is provided on an "as-is" and "as available" basis, and we make no
+        warranties or guarantees that the Application will function as intended. You use the Application at your own risk.\n\n
+        \t3.\tRestrictions on Use: You may not modify, reverse engineer, or decompile the Application, or use it for any illegal or
+        unauthorized purpose. You may not reproduce, distribute, or publicly display any part of the Application without our prior written consent.\n\n
+        \t4.\tPrivacy Policy: The Application collects and stores certain user data in accordance with our Privacy Policy. By using the Application,you
+        consent to our collection and use of your data as described in the Privacy Policy.\n\n
+        \t5.\tIntellectual Property Rights: The Application and its underlying technology are protected by copyright, trademark, and other intellectual property laws. You may not reproduce, distribute, or modify the Application without our prior written consent.
+        \t6.\tTermination: We reserve the right to terminate or suspend your use of the Application at any time, for any reason, without notice.\n\n
+        \t7.\tGoverning Law: These Terms are governed by the laws of the state in which the Application is developed and maintained.\n\n\n
+        \tBy using the Application, you acknowledge that you have read and agree to these Terms. If you do not agree to these Terms, you should not use the Application.</string>
+    <string name="copyRight">\tToTo analytic application is protected by copyright, which means that the developers have exclusive rights to control its use, reproduction,and distribution. Users are not allowed to copy, distribute, or modify the application without the permission of the developers.
+        If someone does so without permission, they may face legal consequences for infringing on the developers intellectual property rights.</string>
+    <string name="privacy">Privacy Statement\n\n
+        \tToTo analytic application ("the Application") respects your privacy and is committed to protecting your personal information.
+        This Privacy Statement explains how we collect, use, and disclose your personal information when you use the Application.\n\n
+        \tInformation We Collect: When you use the Application, we may collect certain personal information from you, such as your name,
+        email address, and location data. We may also collect information about how you use the Application, such as your search history and preferences.\n\n
+        \tHow We Use Your Information: We use your personal information to provide you with the services and features of the Application,
+        to improve the Application, and to communicate with you about the Application. We may also use your information to send you marketing communications,
+        but only if you have given us your consent to do so.\n\n
+        \tDisclosure of Your Information: We may share your personal information with third-party service providers who help us operate the Application and
+        provide its services. We may also disclose your information to comply with legal obligations, protect our rights and property, and enforce our policies.\n\n
+        \tData Security: We take reasonable measures to protect your personal information from unauthorized access, disclosure, or misuse. However,
+        no security measures can provide absolute protection, so we cannot guarantee the security of your information.\n\n
+        \tRetention of Your Information: We retain your personal information for as long as necessary to provide you with the services of
+        the Application and to comply with legal obligations.\n\n
+        \tYour Rights: You have the right to access, correct, and delete your personal information, as well as to object to its processing and
+        to request its transfer to another party. You also have the right to withdraw your consent to receive marketing communications at any time.\n\n
+        \tContact Us: If you have any questions or concerns about this Privacy Statement or our handling of your personal information, please contact us</string>
+
+</resources>

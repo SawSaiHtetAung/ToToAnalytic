@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "802592118248",
+    "firebase_url": "https://totodataanalysis-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "totodataanalysis",
+    "storage_bucket": "totodataanalysis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802592118248:android:beb53e07257c750f71405d",
+        "android_client_info": {
+          "package_name": "com.example.ToToAnalytics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802592118248-mvk2t6garfk6d1b2sll8c8hsn7v1lepr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9RWvFndpDBCAmFdwR4vPw7tc-usMg38Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802592118248-6r5o6uu8iucmfguiapc2kn6futihggt2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802592118248:android:4942c0408b3b263371405d",
+        "android_client_info": {
+          "package_name": "com.example.totoanalysis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802592118248-3c56hbb0puji8a0lov7to8nvhlura51g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.totoanalysis",
+            "certificate_hash": "97e733e7a7043a0e339237f82b030f2432da710b"
+          }
+        },
+        {
+          "client_id": "802592118248-mvk2t6garfk6d1b2sll8c8hsn7v1lepr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9RWvFndpDBCAmFdwR4vPw7tc-usMg38Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802592118248-6r5o6uu8iucmfguiapc2kn6futihggt2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802592118248:android:5dbde35a17afc22271405d",
+        "android_client_info": {
+          "package_name": "com.safeseason.totoanalytic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802592118248-mvk2t6garfk6d1b2sll8c8hsn7v1lepr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9RWvFndpDBCAmFdwR4vPw7tc-usMg38Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802592118248-6r5o6uu8iucmfguiapc2kn6futihggt2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

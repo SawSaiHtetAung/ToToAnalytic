@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <!--
+            Add menu items
+            Menu items with icon and title
+        -->
+        <item
+            android:id="@+id/menuAccount"
+            android:icon="@drawable/baseline_person_24"
+            android:title="My Account" />
+        <item
+            android:id="@+id/menuLanguage"
+            android:icon="@drawable/baseline_language_24"
+            android:title="@string/language" />
+        <item
+            android:id="@+id/menuLoadFormula"
+            android:icon="@drawable/baseline_sync_24"
+            android:title="@string/advFormula" />
+        <item
+            android:id="@+id/menuPurchase"
+            android:icon="@drawable/baseline_shop_2_24"
+            android:title="@string/purchase" />
+        <item
+            android:id="@+id/menuAboutAs"
+            android:icon="@drawable/baseline_account_box_24"
+            android:title="@string/about" />
+        <item
+            android:id="@+id/menuLogOut"
+            android:icon="@drawable/baseline_account_box_24"
+            android:title="Log out" />
+    </group>
+
+</menu>
