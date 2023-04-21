@@ -21,5 +21,8 @@ public class DataProcessing {
     public static ArrayList<String> orgDigital6 = new ArrayList<>();
     public static ArrayList<String> orgAdditional = new ArrayList<>();
 
+    public static ArrayList<Integer> plotMaxNum = new ArrayList<>();
+    public static ArrayList<Integer> plotMinNum = new ArrayList<>();
+
     public static String globalFilter;
 }

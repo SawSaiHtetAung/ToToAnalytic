@@ -40,4 +40,5 @@
         app:layout_constraintEnd_toEndOf="@+id/informationTitle"
         app:layout_constraintStart_toStartOf="@+id/informationTitle"
         app:layout_constraintTop_toBottomOf="@+id/numberPicker" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,10 +9,12 @@
             android:id="@+id/menuAccount"
             android:icon="@drawable/baseline_person_24"
             android:title="My Account" />
+        <!--
         <item
             android:id="@+id/menuLanguage"
             android:icon="@drawable/baseline_language_24"
             android:title="@string/language" />
+            -->
         <item
             android:id="@+id/menuLoadFormula"
             android:icon="@drawable/baseline_sync_24"

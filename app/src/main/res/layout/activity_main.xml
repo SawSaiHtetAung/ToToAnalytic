@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-9420035181070868~1835382690"
+            app:adUnitId="ca-app-pub-9420035181070868/8502646632"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -164,8 +164,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TOTO Analysis"
-                    android:textSize="11sp" />
+                    android:fontFamily="@font/electrolize"
+                    android:text="TOTO Analytic"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <ImageView

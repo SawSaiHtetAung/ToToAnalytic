@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.safeseason.totoanalytic.Helper.UpdateSetChecked;
 import com.safeseason.totoanalytic.R;
@@ -21,7 +22,7 @@ public class ConfigLoadAdaptor extends BaseAdapter {
     public ConfigLoadAdaptor(Context mContext, ArrayList<String> loadFile) {
         mInflater = LayoutInflater.from(mContext);
         this.loadFile = loadFile;
-        checkedStatus = new boolean[loadFile.size()];
+        checkedStatus = new boolean[loadFile.size()/2];
     }
 
     //Interface with main program
@@ -31,7 +32,7 @@ public class ConfigLoadAdaptor extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return loadFile.size();
+        return loadFile.size()/2;
     }
 
     @Override
@@ -51,7 +52,8 @@ public class ConfigLoadAdaptor extends BaseAdapter {
         if (convertView == null){
             row = mInflater.inflate(R.layout.config_list_adaptor, null);
             holder = new ConfigLoadHolder();
-            holder.configFile = row.findViewById(R.id.configFormula);
+            holder.configProfile = row.findViewById(R.id.configProfile);
+            holder.configFormula = row.findViewById(R.id.configFormula);
 
             row.setTag(holder);
         } else {
@@ -59,19 +61,20 @@ public class ConfigLoadAdaptor extends BaseAdapter {
             holder = (ConfigLoadHolder) row.getTag();
         }
         //Load title of config file
-        holder.configFile.setText(loadFile.get(position));
-        holder.configFile.setOnClickListener(view -> {
+        holder.configProfile.setText(loadFile.get((position * 2) + 1));
+        holder.configFormula.setText(loadFile.get(position * 2));
+        holder.configProfile.setOnClickListener(view -> {
             checkedStatus[position] = !checkedStatus[position];
             if (updateSetChecked != null) //Interface with main program
                 updateSetChecked.onCheckedListener(position, checkedStatus[position]);
         });
-        holder.configFile.setChecked(checkedStatus[position]);
+        holder.configProfile.setChecked(checkedStatus[position]);
 
         return row;
     }
 
     static class ConfigLoadHolder{
-        CheckBox configFile;
-
+        CheckBox configProfile;
+        TextView configFormula;
     }
 }

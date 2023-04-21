@@ -30,7 +30,9 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.safeseason.totoanalytic.RegisterNewUser.RegisterMain;
 
 public class LoginActivity extends AppCompatActivity {
     //Make global variable
@@ -111,6 +113,13 @@ public class LoginActivity extends AppCompatActivity {
 
         //Create firebase console
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        //If user is already signIn directly go to Main Activity page
+        if (user != null){
+            Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mainActivity);
+            LoginActivity.this.finish();
+        }
 
         //Set shared Preferences
         SharedPreferences loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -129,8 +138,11 @@ public class LoginActivity extends AppCompatActivity {
         googleLoginBtn.setOnClickListener(view -> loginGoogleAccount());
 
         registerBtn.setOnClickListener(view -> {
-            AlertDialog register = registerNewUser();
-            register.show();
+            RegisterMain main = new RegisterMain();
+            main.show(getSupportFragmentManager(), "New Register");
+
+            //AlertDialog register = registerNewUser();
+            //register.show();
         });
 
         recoveryBtn.setOnClickListener(view -> {
@@ -186,67 +198,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    @SuppressLint("SetTextI18n")
-    private AlertDialog registerNewUser() {
-        AlertDialog dialogBuilder = new AlertDialog.Builder(this).create();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.register_new_user, null);
-        dialogBuilder.setView(dialogView);
-
-        //Registering resources
-        Button register = dialogView.findViewById(R.id.registerButton);
-        EditText getEmail = dialogView.findViewById(R.id.registerEmail);
-        EditText getPassword = dialogView.findViewById(R.id.registerPassword);
-        EditText getConfirmed = dialogView.findViewById(R.id.confirmedPassword);
-        TextView setInformation = dialogView.findViewById(R.id.registerInformation);
-
-        register.setOnClickListener(view -> {
-            if (register.getText().equals("LOGIN")) {
-                dialogBuilder.dismiss();
-                return;
-            }
-
-            ProgressDialog serverStatus = ProgressDialog.show(view.getContext(), "","Register to server", true);
-            String email, password, confirmed;
-
-            email = getEmail.getText().toString();
-            password = getPassword.getText().toString();
-            confirmed = getConfirmed.getText().toString();
-
-            //Validation for input Email and Password
-            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
-                serverStatus.dismiss();
-                return;
-            }
-
-            //Check if input password and confirmed password
-            if (!password.equals(confirmed)){
-                getConfirmed.setError("Password does not match");
-                serverStatus.dismiss();
-                return;
-            }
-
-            //Create new user or register new user
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
-
-                            getEmail.setFocusable(false);
-                            getPassword.setFocusable(false);
-                            getConfirmed.setFocusable(false);
-                            register.setText("LOGIN");
-                            setInformation.setText("Registration successful, please login to continue");
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
-                            setInformation.setText("Registration failed, please check the input information");
-                        }
-                        serverStatus.dismiss();
-                    });
-        });
-
-        return dialogBuilder;
-    }
 
     private AlertDialog recovery(){
         AlertDialog dialogBuilder = new AlertDialog.Builder(this).create();

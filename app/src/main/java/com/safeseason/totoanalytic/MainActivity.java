@@ -3,6 +3,7 @@ package com.safeseason.totoanalytic;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -10,11 +11,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,14 +26,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,11 +40,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
@@ -60,6 +54,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.safeseason.totoanalytic.Helper.AdvFilterDialog;
+import com.safeseason.totoanalytic.Helper.AdvFilterViewModel;
 import com.safeseason.totoanalytic.Helper.DataProcessing;
 import com.safeseason.totoanalytic.Helper.UpdateSetChecked;
 import com.safeseason.totoanalytic.Menu.ConfigLoadAdaptor;
@@ -96,17 +92,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseUser firebaseUser;
     ArrayList<String> saveSetting = new ArrayList<>();
     ArrayList<Boolean> delSetting = new ArrayList<>();
-    TextView advFilterDisplay, argumentTextDisplay;
-    String algorithmBuff = "N/A";
-    String currentAdvFilter = "No filter";
-    boolean hasAlgorithm;
-    ArrayAdapter<CharSequence> argAdaptorList;
-    Spinner algorithm;
-    Spinner argument;
-    Spinner prefix;
-    Spinner suffix;
+    private AdvFilterViewModel viewModel;
     ArrayList<String> configFileUI;
     private final String PREFS_LOC = "AdvSetting_";
+    private final String PREFS_PROF = "AdvProfile_";
+    private final String SAVE_SETTING_PREF = "pre setting";
 
     @Override
     protected void onPostResume() {
@@ -121,11 +111,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
+
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //Disable night mode
 
         //Set resource
         advancedBtn  = findViewById(R.id.advBtn);
@@ -142,7 +134,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Initialize sign in client
         googleSignInClient = GoogleSignIn.getClient(getApplicationContext(), GoogleSignInOptions.DEFAULT_SIGN_IN);
+        //Create progress dialog
+        firebaseLoading = ProgressDialog.show(this,"","Loading data from server", true );
 
+        //Set View model
+        viewModel = new ViewModelProvider(this).get(AdvFilterViewModel.class);
+        viewModel.getAdvFilterString().observe(this, setting -> {
+            saveSetting = new ArrayList<>(setting);
+            int current = 0;
+            for (String ignored : saveSetting){
+                if (current % 2 == 0)
+                    delSetting.add(false);
+                current++;
+            }
+
+        });
 
         //Set shared Preferences
         //Advance filter resources
@@ -154,20 +160,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int index = 0;
 
         for (int i=0; i<6; i++){
-            String getString;
+            String getProfile;
+            String getFormula;
 
             //Build Preferences location
-            getString = advPreferences.getString(PREFS_LOC + index++, "");
+            getProfile = advPreferences.getString(PREFS_LOC + index++, "");
+            getFormula = advPreferences.getString(PREFS_PROF+index, "");
 
-            if (!getString.equals("") && !getString.equals("No filter")){
-                saveSetting.add(getString);
+            if (!getProfile.equals("") && !getProfile.equals("No filter")){
+                saveSetting.add(getProfile);
+                saveSetting.add(getFormula);
                 delSetting.add(false);
             }
         }
-
-        //Create progress dialog
-        firebaseLoading = ProgressDialog.show(this,"","Loading data from server", true );
-
         //Initialize the ads
         MobileAds.initialize(this, initializationStatus -> {
         });
@@ -190,10 +195,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Advanced button click listener
         advancedBtn.setOnClickListener(view -> {
-            AlertDialog alertDialog;
-            //Todo interface code in here
-            alertDialog = advFilterDialog();
-            alertDialog.show();
+            AdvFilterDialog advFilter = new AdvFilterDialog();
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(SAVE_SETTING_PREF,saveSetting);
+            advFilter.setArguments(bundle);
+            advFilter.show(getSupportFragmentManager(), "advFilter");
+
         });
 
         //If user press the exit button
@@ -210,10 +217,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     AlertDialog account = accountSelected();
                     account.show();
                     break;
-                case R.id.menuLanguage:
-                    AlertDialog languageAlert = languageSelected();
-                    languageAlert.show();
-                    break;
+//                case R.id.menuLanguage:
+//                    AlertDialog languageAlert = languageSelected();
+//                    languageAlert.show();
+//                    break;
                 case R.id.menuLoadFormula:
                     AlertDialog menuFormula = configLoad();
                     menuFormula.show();
@@ -497,10 +504,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPositiveButton("Yes", (dialogInterface, id) -> {
                             int currentPosition = 0;
                             for (boolean status: delSetting){
+                                System.out.println(saveSetting);
                                 if (status){
                                     saveSetting.remove(currentPosition);
+                                    saveSetting.remove(currentPosition);
                                 } else {
-                                    currentPosition++;
+                                    currentPosition = currentPosition + 2;
                                 }
                             }
 
@@ -508,8 +517,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             currentPosition = 0;
                             advPrefsEditor.clear();
                             delSetting.clear();
-                            for (String filter: saveSetting){
-                                advPrefsEditor.putString(PREFS_LOC + currentPosition, filter);
+                            for (String string: saveSetting){
+                                if (currentPosition % 2 == 0)
+                                    advPrefsEditor.putString(PREFS_LOC + currentPosition, string);
+                                else
+                                    advPrefsEditor.putString(PREFS_PROF+ currentPosition, string);
                                 delSetting.add(false);
                                 currentPosition++;
                             }
@@ -524,131 +536,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         });
         return alertDialog;
-    }
-
-    @SuppressLint("DefaultLocale")
-    private AlertDialog advFilterDialog() {
-
-        //Set initial value
-        hasAlgorithm = false;
-
-        AlertDialog dialogBuilder = new AlertDialog.Builder(this).create();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View dialogView = inflater.inflate(R.layout.advance_analysis, null);
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCanceledOnTouchOutside(false);
-
-        //Add checkbox function
-        MaterialCheckBox loadSearch = dialogView.findViewById(R.id.advSearchCB);
-        MaterialCheckBox loadAdditional = dialogView.findViewById(R.id.advAdditionalCB);
-
-        loadSearch.setOnCheckedChangeListener((compoundButton, flag) -> {
-            String filter;
-            if (flag){
-                filter = "Ser:true";
-            } else {
-                filter = "Ser:false";
-            }
-            advFilterChange(filter, hasAlgorithm);
-        });
-
-        loadAdditional.setOnCheckedChangeListener((compoundButton, flag) -> {
-            String filter;
-            if (flag){
-                filter = "Add:true";
-            } else {
-                filter = "Add:false";
-            }
-            advFilterChange(filter, hasAlgorithm);
-        });
-
-        //Todo code for advance filter
-        String[] filterItems = new String[50];
-        filterItems[0] = "N/A";
-        for (int j=1; j<=49; j++)
-            filterItems[j] = String.format("%02d", j);
-
-        NumberPicker picker = dialogView.findViewById(R.id.advNumberPicker);
-        picker.setDisplayedValues(filterItems);
-        picker.setMinValue(0);
-        picker.setMaxValue(filterItems.length - 1);
-        picker.setWrapSelectorWheel(true);
-
-        //Adding spinner adaptor lists
-        ArrayAdapter<CharSequence> algorithmAdaptorList = ArrayAdapter.createFromResource(this,
-                R.array.algorithm, android.R.layout.simple_spinner_dropdown_item);
-
-        argAdaptorList = ArrayAdapter.createFromResource(this,
-                R.array.JUMP, android.R.layout.simple_spinner_dropdown_item);
-
-        ArrayAdapter<CharSequence> prefixAdaptorList = ArrayAdapter.createFromResource(this,
-                R.array.prefix, android.R.layout.simple_spinner_dropdown_item);
-        ArrayAdapter<CharSequence> suffixAdaptorList = ArrayAdapter.createFromResource(this,
-                R.array.suffix, android.R.layout.simple_spinner_dropdown_item);
-
-        algorithm = dialogView.findViewById(R.id.algorithm);
-        argument = dialogView.findViewById(R.id.advArg);
-        prefix = dialogView.findViewById(R.id.prefix);
-        suffix = dialogView.findViewById(R.id.suffix);
-
-        algorithm.setAdapter(algorithmAdaptorList);
-        argument.setAdapter(argAdaptorList);
-        prefix.setAdapter(prefixAdaptorList);
-        suffix.setAdapter(suffixAdaptorList);
-
-
-        //Set item click listener
-        picker.setOnValueChangedListener((numberPicker, oldValue, newValue) -> {
-            String filter;
-            if (newValue == 0)
-                filter = "Num:" + "N/A";
-            else
-                filter = "Num:" + newValue;
-            advFilterChange(filter, hasAlgorithm);
-        });
-        advFilterDisplay = dialogView.findViewById(R.id.advFilterDisplay);
-        argumentTextDisplay = dialogView.findViewById(R.id.advArgumentText);
-        algorithm.setOnItemSelectedListener(advFilter);
-        prefix.setOnItemSelectedListener(advFilter);
-        suffix.setOnItemSelectedListener(advFilter);
-        argument.setOnItemSelectedListener(advFilter);
-
-        prefix.setEnabled(false);
-        suffix.setEnabled(false);
-        argument.setEnabled(false);
-
-        //Button
-        MaterialButton confirmedBtn = dialogView.findViewById(R.id.advConfirmed);
-        MaterialButton exitBtn = dialogView.findViewById(R.id.advExit);
-
-        confirmedBtn.setOnClickListener(view -> {
-            if (!currentAdvFilter.equals("No filter")){
-                //Find duplicate setting, if find break the loop
-                for (String match: saveSetting){
-                    if (match.equals(currentAdvFilter)) {
-                        confirmedBtn.setError("Duplicate setting");
-                        return;
-                    }
-                }
-
-                String prefsLocation;
-                if (saveSetting.size() >= 6) {
-                    prefsLocation = PREFS_LOC + "5";
-                    saveSetting.set(5, currentAdvFilter);
-                } else {
-                    prefsLocation = PREFS_LOC + saveSetting.size();
-                    saveSetting.add(currentAdvFilter); //Add current setting to save setting
-                    delSetting.add(false);
-                }
-
-                advPrefsEditor.putString(prefsLocation, currentAdvFilter);
-                advPrefsEditor.commit();
-            }
-            dialogBuilder.dismiss();
-        });
-        exitBtn.setOnClickListener(view -> dialogBuilder.dismiss());
-
-        return dialogBuilder;
     }
 
     private AlertDialog aboutUs(){
@@ -713,144 +600,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return dialogBuilder;
     }
-
-    AdapterView.OnItemSelectedListener advFilter = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-            String advFilter = "";
-            switch (adapterView.getId()){
-                case R.id.algorithm:
-                    advFilter = "Alg:" + adapterView.getSelectedItem().toString();
-                    if (!adapterView.getSelectedItem().toString().equals("N/A")) {
-                        argumentTextDisplay.setText(adapterView.getSelectedItem().toString());
-                        hasAlgorithm = true;
-
-                        //Enable spinner to selected
-                        prefix.setEnabled(true);
-                        suffix.setEnabled(true);
-                        argument.setEnabled(true);
-
-                    } else {
-
-                        //Disable spinner to selected
-                        argumentTextDisplay.setText(getResources().getString(R.string.arg));
-                        hasAlgorithm = false;
-
-                        prefix.setEnabled(false);
-                        suffix.setEnabled(false);
-                        argument.setEnabled(false);
-
-                        prefix.setSelection(0);
-                        suffix.setSelection(0);
-                        argument.setSelection(0);
-                    }
-                    break;
-                case R.id.prefix:
-                    advFilter = "Pre:" + adapterView.getSelectedItem().toString();
-                    break;
-                case R.id.suffix:
-                    advFilter = "Suf:" + adapterView.getSelectedItem().toString();
-                    break;
-                case R.id.advArg:
-                    advFilter = "Arg:" + adapterView.getSelectedItem().toString();
-                    break;
-            }
-            advFilterChange(advFilter, hasAlgorithm);
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
-    /**
-     *
-     * @param advFilter
-     * @param hasAlgorithm
-     */
-    private void advFilterChange(String advFilter, boolean hasAlgorithm) {
-        String filterPre = advFilterDisplay.getText().toString();
-        StringBuilder filterDisplayString = new StringBuilder(filterPre);
-
-        //Check if display in adv filter
-        if (filterDisplayString.toString().equals("No filter"))
-            filterDisplayString = new StringBuilder();
-
-        if (!hasAlgorithm)
-            advFilterDisplay.setText(getString(R.string.no_filter));
-
-        //Query the data
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Num", "N/A");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Alg", "N/A");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Pre", "N/A");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Suf", "N/A");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Arg", "N/A");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Ser", "false");
-        filterDisplayString = dataQuery(filterDisplayString.toString(), advFilter, "Add", "false");
-        System.out.println(filterDisplayString);
-
-        //This function must be place below
-        //If there is no filter, display "No filter" in display query
-        if (!filterDisplayString.toString().contains("Num") && !filterDisplayString.toString().contains("Alg") && !filterDisplayString.toString().contains("Pre")
-                && !filterDisplayString.toString().contains("Suf") && !filterDisplayString.toString().contains("Arg") && !filterDisplayString.toString().contains("Ser")
-                && !filterDisplayString.toString().contains("Add")){
-            filterDisplayString = new StringBuilder("No filter");
-            algorithmBuff = "N/A";
-        } else {
-            String algorithmValue = filterDisplayBuilder(filterDisplayString, "Num");
-            filterDisplayBuilder(filterDisplayString, "Alg");
-            filterDisplayBuilder(filterDisplayString, "Pre");
-            filterDisplayBuilder(filterDisplayString, "Suf");
-            filterDisplayBuilder(filterDisplayString, "Arg");
-            filterDisplayBuilder(filterDisplayString, "Ser");
-            filterDisplayBuilder(filterDisplayString, "Add");
-
-            //Set the
-            algorithmBuff = algorithmValue;
-        }
-
-        //Set the filter display on text view
-        advFilterDisplay.setText(filterDisplayString);
-        currentAdvFilter = filterDisplayString.toString(); //Store to current advFilter
-    }
-
-    private String filterDisplayBuilder(StringBuilder filterDisplayString, String filterString) {
-        if (filterDisplayString.toString().contains(filterString)){
-            String preDate = filterDisplayString.substring(filterDisplayString.indexOf(filterString));
-            String preEnd = preDate.substring(preDate.indexOf(";"));
-
-            int preDateIndex = filterDisplayString.indexOf(preDate);
-            int preEndIndex = preDate.indexOf(preEnd);
-
-            if (preDateIndex != -1) {
-                return filterDisplayString.substring(preDateIndex + filterString.length() + 1, preDateIndex + preEndIndex);
-            }
-        }
-        return "";
-    }
-
-    private StringBuilder dataQuery(String inputString, String queryString, String filter, @Nullable String defFilter){
-        StringBuilder filterString = new StringBuilder(inputString);
-        if (queryString.contains(filter)){
-            if (inputString.contains(filter)){
-                String deleteYearSetting = inputString.substring(inputString.indexOf(filter));
-                String spaceDelete = deleteYearSetting.substring(deleteYearSetting.indexOf(";"));
-                int yearDeleteIndex = inputString.indexOf(deleteYearSetting);
-                int spaceIndex = deleteYearSetting.indexOf(spaceDelete);
-
-                if (yearDeleteIndex != -1)
-                    filterString.delete(yearDeleteIndex, yearDeleteIndex + spaceIndex + 1);
-            }
-            //If selected year, append to string builder
-            if(!queryString.equals(filter + ":" + filter) && !queryString.equals(filter + ":" + defFilter)){
-                filterString.append(queryString).append(";");
-            }
-        }
-
-        return filterString;
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){

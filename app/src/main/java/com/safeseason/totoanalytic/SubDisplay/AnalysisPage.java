@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 public class AnalysisPage extends Fragment {
@@ -73,7 +74,7 @@ public class AnalysisPage extends Fragment {
     ProgressDialog adsDialog;
     private long timerMilliseconds;
     private static final long GAME_LENGTH_MILLISECONDS = 10000;
-    private static final String AD_UNIT_ID = "ca-app-pub-9420035181070868~1835382690";
+    private static final String AD_UNIT_ID = "ca-app-pub-9420035181070868/9004429269";
     private static final String TAG = "AdvFilterLoad";
 
 
@@ -339,7 +340,9 @@ public class AnalysisPage extends Fragment {
 
         ArrayList<Integer> cpyCompute = new ArrayList<>(computeNumFrequency);
         ArrayList<Integer> maxList = getMaxTop10Num(computeNumFrequency);
+        DataProcessing.plotMaxNum = new ArrayList<>(maxList);
         ArrayList<Integer> minList = getMinTop10Num(cpyCompute);
+        DataProcessing.plotMinNum = new ArrayList<>(minList);
 
         for (int i=0; i<20; i += 2){
             xValueMax.add(maxList.get(i+1));
@@ -352,12 +355,21 @@ public class AnalysisPage extends Fragment {
         //Redraw the top plot graph with firebase data
         topListSerial = new SimpleXYSeries(xValueMax, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Top 10");
 
-        //If the boundary value will set to limit 0
-        if (Collections.min(xValueMax) < 3)
-            plotTop.setRangeBoundaries(Collections.min(xValueMax), Collections.max(xValueMax), BoundaryMode.FIXED);
-        else
-            plotTop.setRangeBoundaries(Collections.min(xValueMax) - 3, Collections.max(xValueMax) + 3, BoundaryMode.FIXED);
+        int topBoundaryLower, topBoundaryUpper;
 
+        if (Collections.min(xValueMax) < 3){
+            topBoundaryLower = 0;
+        } else {
+            topBoundaryLower = Collections.min(xValueMax) - 3;
+        }
+
+        if (Collections.max(xValueMax) < 10){
+            topBoundaryUpper = 10;
+        } else {
+            topBoundaryUpper = Collections.max(xValueMax) + 3;
+        }
+
+        plotTop.setRangeBoundaries(topBoundaryLower, topBoundaryUpper, BoundaryMode.FIXED);
         plotTop.setDomainStep(StepMode.INCREMENT_BY_VAL, 1);
         plotTop.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
             @Override
@@ -392,12 +404,21 @@ public class AnalysisPage extends Fragment {
         //Redraw the button plot graph with firebase data
         buttonListSerial = new SimpleXYSeries(xValueMin, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Below 10");
 
-        //If the boundary value will set to limit 0
-        if (Collections.min(xValueMin) < 3)
-            plotBelow.setRangeBoundaries(Collections.min(xValueMin), Collections.max(xValueMin) + 3, BoundaryMode.FIXED);
-        else
-            plotBelow.setRangeBoundaries(Collections.min(xValueMin) - 3, Collections.max(xValueMin) + 3, BoundaryMode.FIXED);
+        int belowBoundaryLower, belowBoundaryUpper;
 
+        if (Collections.min(xValueMin) < 3){
+            belowBoundaryLower = 0;
+        } else {
+            belowBoundaryLower = Collections.min(xValueMin) - 3;
+        }
+
+        if (Collections.max(xValueMin) < 10){
+            belowBoundaryUpper = 10;
+        } else {
+            belowBoundaryUpper = Collections.max(xValueMin) + 3;
+        }
+
+        plotBelow.setRangeBoundaries(belowBoundaryLower, belowBoundaryUpper, BoundaryMode.FIXED);
         plotBelow.setDomainStep(StepMode.INCREMENT_BY_VAL, 1);
         plotBelow.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
             @Override
@@ -461,6 +482,11 @@ public class AnalysisPage extends Fragment {
         return nunFrequency;
     }
 
+    /**
+     *
+     * @param numFrequency
+     * @return
+     */
     private ArrayList<Integer> getMaxTop10Num(ArrayList<Integer> numFrequency){
         ArrayList<Integer> setSortedNumber = new ArrayList<>();
         ArrayList<Integer> holdingSorted = new ArrayList<>(numFrequency);
@@ -489,6 +515,11 @@ public class AnalysisPage extends Fragment {
         return setSortedNumber;
     }
 
+    /**
+     *
+     * @param numFrequency
+     * @return
+     */
     private ArrayList<Integer> getMinTop10Num(ArrayList<Integer> numFrequency){
         ArrayList<Integer> setSortedNumber = new ArrayList<>();
         ArrayList<Integer> holdingSorted = new ArrayList<>(numFrequency);
@@ -529,6 +560,7 @@ public class AnalysisPage extends Fragment {
 
         //Get data from sharing preference
         final String PREFS_LOC = "AdvSetting_";
+        final String PREFS_PROF = "AdvProfile_";
 
         //Load resources
         RadioGroup group = dialogView.findViewById(R.id.analysisLoadRadioGroup);
@@ -540,13 +572,15 @@ public class AnalysisPage extends Fragment {
         ArrayList<String> saveSetting = new ArrayList<>();
         int index = 0;
         for (int i=0; i<6; i++){
-            String getString;
+            String getProfile;
+            String getFormula;
 
             //Build Preferences location
-            getString = advPreferences.getString(PREFS_LOC + index++, "");
+            getFormula = advPreferences.getString(PREFS_LOC + index++, "");
+            getProfile = advPreferences.getString(PREFS_PROF+index, "");
 
-            if (!getString.equals("") && !getString.equals("No filter")){
-                saveSetting.add(getString);
+            if (!getProfile.equals("") && !getProfile.equals("No filter")){
+                saveSetting.add(getProfile + " (" + getFormula + ")");
             }
         }
 
@@ -694,10 +728,60 @@ public class AnalysisPage extends Fragment {
 
                 }
                 break;
+
+            case "DUP":
+                System.out.println("Calculation Duplication algorithm >>>>>");
+                if (!numDisplay.isEmpty()){
+                    int index = stringToInteger(numDisplay);
+                    System.out.println("Index is:" + index);
+
+                    int currentPos = 0;
+                    ArrayList<Integer> rowTemp = new ArrayList<>();
+                    boolean foundMatch = false;
+                    for (int matchDigital : tempDigital1){
+                        rowTemp.clear();
+                        rowTemp.add(matchDigital);
+                        rowTemp.add(tempDigital2.get(currentPos));
+                        rowTemp.add(tempDigital3.get(currentPos));
+                        rowTemp.add(tempDigital4.get(currentPos));
+                        rowTemp.add(tempDigital5.get(currentPos));
+                        rowTemp.add(tempDigital6.get(currentPos));
+
+                        if (advFilter.contains("Add"))
+                            rowTemp.add(tempAdditional.get(currentPos));
+
+                        //ToDo filter code in here
+
+                        if (rowTemp.contains(index) && currentPos != 0){
+                            if (foundMatch && currentPos >= 1){
+                                unSortedNum.add(tempDigital1.get(currentPos -2 ));
+                                unSortedNum.add(tempDigital2.get(currentPos -2 ));
+                                unSortedNum.add(tempDigital3.get(currentPos -2 ));
+                                unSortedNum.add(tempDigital4.get(currentPos -2 ));
+                                unSortedNum.add(tempDigital5.get(currentPos -2 ));
+                                unSortedNum.add(tempDigital6.get(currentPos -2 ));
+
+                                if (advFilter.contains("Add"))
+                                    unSortedNum.add(tempAdditional.get(currentPos - 2));
+                            }
+                            System.out.println(rowTemp);
+                            System.out.println(currentPos);
+                            foundMatch = true;
+                        } else {
+                            foundMatch = false;
+                        }
+                        //End of filter code
+                        currentPos++;
+                    }
+                }
+                break;
+            default:
+                return;
         }
 
 
         //Display processing
+        System.out.println(unSortedNum);
         ArrayList<Integer> sorted = computeNumFreq(unSortedNum, null);
         setGraphPlot(sorted);
 
